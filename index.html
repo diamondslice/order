@@ -9,8 +9,15 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#F7F5F0; --surface:#FFFFFF; --ink:#1A1814; --ink2:#6B6760; --ink3:#A8A49E;
-  --border:#E4E1DA; --green:#2E6B42; --green-bg:#EAF3EE; --green-border:#B6D9C4;
+  --bg:#F7F5F0;
+  --surface:#FFFFFF;
+  --ink:#1A1814;
+  --ink2:#6B6760;
+  --ink3:#A8A49E;
+  --border:#E4E1DA;
+  --green:#2E6B42;
+  --green-bg:#EAF3EE;
+  --green-border:#B6D9C4;
 }
 html,body{height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
 body{padding-bottom:90px}
@@ -32,7 +39,7 @@ body{padding-bottom:90px}
 .qty-wrap{display:flex;align-items:center;gap:6px;opacity:0;pointer-events:none;transition:opacity 0.15s}
 .row.checked .qty-wrap{opacity:1;pointer-events:all}
 .qty-num{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--green);min-width:20px;text-align:center}
-.qty-btn{width:34px;height:34px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--green);line-height:1;flex-shrink:0;user-select:none}
+.qty-btn{width:36px;height:36px;border-radius:8px;border:1px solid var(--green-border);background:var(--green-bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--green);line-height:1;flex-shrink:0;user-select:none}
 .qty-btn:active{background:var(--green-border)}
 .bottom{position:fixed;bottom:0;left:0;right:0;padding:10px 16px 12px;background:var(--surface);border-top:1px solid var(--border);display:flex;gap:10px;align-items:center}
 .bottom-info{font-size:13px;color:var(--ink2);flex:1;line-height:1.3}
@@ -63,48 +70,196 @@ body{padding-bottom:90px}
 </div>
 <script>
 const SECTIONS = [
-  {name:'Cheese', items:['Gruyere','Mascarpone','Mozz low-moisture (Grande)','Mozz whole milk fresh (Grande)','Grana Padano','Ricotta impastata','Pecorino Romano']},
-  {name:'Dairy', items:['Butter unsalted','Heavy cream','Eggs XL','Whole milk','Sour cream']},
-  {name:'Produce', items:['Basil','Celery','Chives','Dill','Garlic peeled','Romaine','Mushrooms medium','Mushrooms mixed','Scallions','Red onion','Yellow onion','Jalapeño','Shallots']},
-  {name:'Canned & Dry Goods', items:['Corn (canned)','Tomato passata','Whole plum tomatoes','Anchovy paste','Lady fingers','Bread crumbs fine','Bread crumbs medium','Semolina flour (Gold Medal)','Semolina flour (Caputo)','Bread flour (King Arthur)','Hot honey',"Mayo (Hellmann's)",'Black olives sliced','Cavatappi','Linguine','Rigatoni','Calabrese peppers (whole)','Calabrian peppers (chopped)','Chipotle peppers','Kosher salt','Sea salt fine',"BBQ sauce (Ken's)","Frank's hot sauce",'Garlic granulated','Garlic powder shaker','Garlic powder (McCormick)','Onion powder','Oregano','Parsley flakes','Red pepper flakes (jug)','Red pepper flakes (shaker)','Sesame seeds','Sugar']},
-  {name:'Oils & Shortening', items:['EVOO (Corto)','Pam spray','Frying oil blend (La Padella)','Soybean oil','Frying shortening']},
-  {name:'Meat & Poultry', items:['Bacon','Ground pork 80/20','Chicken breast','Pepperoni 38mm cup-char (Ezzo)','Pepperoni 35mm (Rosa Grande)','Pepperoni 8-ct (Rosa Grande)']},
-  {name:'Beverages', items:['Aranciata Rossa','Red Bull sugar-free','Mandarin sparkling','Pomegranate sparkling','Blood orange soda','Limonata','Coke Mexican glass','Diet Coke','Coke Zero','Dr Pepper can','Dr Pepper bottle','Sprite Mexican glass','Fanta orange Mexican glass',"Lemon juice (Natalie's)",'San Pellegrino glass','San Pellegrino plastic','Poland Spring','Acqua Panna']},
-  {name:'Cleaning', items:['Bleach','Floor cleaner (Mr. Clean)','Dish soap','Pot & pan soap (Dawn)']},
-  {name:'Paper & Disposables', items:['Grocery bags','Shopping bags','Pizza box 12" Kraft (Waxzie)','Pizza box 12" white cafe','Pizza box 16" Kraft cafe','Pizza box 16" white cafe','Pizza box 16" plain Kraft','Pizza box 20" white','Pizza box liners 20"','Deli containers 8oz','Food wrap 24"','Food wrap 12"','Forks black','Knives black','Latex gloves L','Latex gloves M','Nitrile gloves S','Nitrile gloves XL','Trash liners 33 GA','Trash liners 56 GA','Trash liners 60 GA clear','Napkins interfold','Napkins low fold','Napkins tall fold','Paper plates 9"','Straws jumbo PLA','Toilet paper','Paper towel C-fold 2ply','Paper towel C-fold 1ply','Paper towel roll 170sh','Paper towel C-fold bagasse','Paper towel roll 85sh','Paper towel roll 128sh (Scott)','Wax paper']},
+  {name:'Cheese', items:[
+    {s:'Gruyere'},
+    {s:'Mascarpone'},
+    {s:'Mozz low-moisture (Grande)'},
+    {s:'Mozz whole milk fresh (Grande)'},
+    {s:'Grana Padano'},
+    {s:'Ricotta impastata'},
+    {s:'Pecorino Romano'},
+  ]},
+  {name:'Dairy', items:[
+    {s:'Butter unsalted'},
+    {s:'Heavy cream'},
+    {s:'Eggs'},
+    {s:'Whole milk'},
+    {s:'Sour cream'},
+  ]},
+  {name:'Produce', items:[
+    {s:'Basil'},
+    {s:'Celery'},
+    {s:'Chives'},
+    {s:'Dill'},
+    {s:'Garlic peeled'},
+    {s:'Romaine'},
+    {s:'Mushrooms'},
+    {s:'Scallions'},
+    {s:'Red onion'},
+    {s:'Yellow onion'},
+    {s:'Jalapeño'},
+    {s:'Shallots'},
+  ]},
+  {name:'Canned & Dry Goods', items:[
+    {s:'Corn (canned)'},
+    {s:'Tomato passata (Divino Mulino)'},
+    {s:'Whole plum tomatoes (Alta Cucina)'},
+    {s:'Anchovy paste'},
+    {s:'Lady fingers'},
+    {s:'Bread crumbs regular'},
+    {s:'Bread crumbs panko'},
+    {s:'Semolina flour (Gold Medal)'},
+    {s:'Semolina flour (Caputo)'},
+    {s:'Bread flour (King Arthur)'},
+    {s:'Hot honey'},
+    {s:"Mayo (Hellmann's)"},
+    {s:'Black olives sliced'},
+    {s:'Cavatappi'},
+    {s:'Linguine'},
+    {s:'Rigatoni'},
+    {s:'Calabrese peppers (whole)'},
+    {s:'Calabrian peppers (chopped)'},
+    {s:'Chipotle in adobo (canned)'},
+    {s:'Dijon mustard'},
+    {s:'White wine vinegar'},
+    {s:'Red wine vinegar'},
+    {s:"BBQ sauce (Ken's)"},
+    {s:"Frank's hot sauce"},
+    {s:'Sugar'},
+  ]},
+  {name:'Seasonings', items:[
+    {s:'Kosher salt (Diamond Crystal)'},
+    {s:'Sea salt fine'},
+    {s:'Black pepper ground'},
+    {s:'Garlic granulated'},
+    {s:'Garlic powder'},
+    {s:'Onion powder'},
+    {s:'Oregano'},
+    {s:'Parsley flakes'},
+    {s:'Red pepper flakes'},
+    {s:'Sesame seeds'},
+    {s:'Paprika'},
+    {s:'Fennel seed'},
+    {s:'MSG'},
+  ]},
+  {name:'Oils & Shortening', items:[
+    {s:'EVOO (Corto)'},
+    {s:'Pam spray'},
+    {s:'Fryer oil'},
+    {s:'Soybean oil 1 GA (dressings)'},
+  ]},
+  {name:'Meat & Poultry', items:[
+    {s:'Bacon'},
+    {s:'Ground pork 80/20'},
+    {s:'Chicken breast'},
+    {s:'Pepperoni'},
+  ]},
+  {name:'Beverages', items:[
+    {s:'Aranciata Rossa'},
+    {s:'Red Bull sugar-free'},
+    {s:'Mandarin sparkling'},
+    {s:'Pomegranate sparkling'},
+    {s:'Blood orange soda'},
+    {s:'Limonata'},
+    {s:'Coke Mexican glass'},
+    {s:'Diet Coke'},
+    {s:'Coke Zero'},
+    {s:'Dr Pepper can'},
+    {s:'Dr Pepper bottle'},
+    {s:'Sprite Mexican glass'},
+    {s:'Fanta orange Mexican glass'},
+    {s:"Lemon juice (Natalie's)"},
+    {s:'San Pellegrino glass'},
+    {s:'San Pellegrino plastic'},
+    {s:'Poland Spring'},
+    {s:'Acqua Panna'},
+  ]},
+  {name:'Cleaning', items:[
+    {s:'Bleach'},
+    {s:'Floor cleaner (Mr. Clean)'},
+    {s:'Dish soap'},
+    {s:'Pot & pan soap (Dawn)'},
+  ]},
+  {name:'Paper & Disposables', items:[
+    {s:'Grocery bags'},
+    {s:'Shopping bags'},
+    {s:'Pizza box 12"'},
+    {s:'Pizza box 16"'},
+    {s:'Pizza box 20"'},
+    {s:'Pizza box liners 20"'},
+    {s:'Pan liner 12x16"'},
+    {s:'Deli containers 8oz'},
+    {s:'Food wrap 24"'},
+    {s:'Food wrap 12"'},
+    {s:'Forks black'},
+    {s:'Knives black'},
+    {s:'Latex gloves L'},
+    {s:'Latex gloves M'},
+    {s:'Nitrile gloves S'},
+    {s:'Nitrile gloves XL'},
+    {s:'Trash liners 33 GA'},
+    {s:'Trash liners 56 GA'},
+    {s:'Trash liners 60 GA clear'},
+    {s:'Napkins interfold'},
+    {s:'Napkins low fold'},
+    {s:'Napkins tall fold'},
+    {s:'Paper plates 9"'},
+    {s:'Straws jumbo PLA'},
+    {s:'Toilet paper'},
+    {s:'Paper towel C-fold'},
+    {s:'Paper towel roll'},
+    {s:'Wax paper'},
+  ]},
 ];
+
 let state={};
 try{state=JSON.parse(localStorage.getItem('ds_state')||'{}');}catch(e){}
 function key(si,ii){return si+'_'+ii;}
 function save(){try{localStorage.setItem('ds_state',JSON.stringify(state));}catch(e){}}
+
 function render(){
   const list=document.getElementById('list');
   list.innerHTML='';
   SECTIONS.forEach((sec,si)=>{
     const c=document.createElement('div');
-    c.className='cat-label';c.textContent=sec.name;list.appendChild(c);
+    c.className='cat-label';
+    c.textContent=sec.name;
+    list.appendChild(c);
     sec.items.forEach((item,ii)=>{
       const k=key(si,ii);
       if(!state[k])state[k]={checked:false,qty:1};
       const st=state[k];
       const row=document.createElement('div');
       row.className='row'+(st.checked?' checked':'');
-      row.innerHTML=`<div class="chk" onclick="toggle('${k}')"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="iname" onclick="toggle('${k}')">${item}</div><div class="qty-wrap"><div class="qty-btn" onclick="changeQty('${k}',-1)" style="font-size:22px">−</div><div class="qty-num" id="qn_${k}">${st.qty>1?'x'+st.qty:''}</div><div class="qty-btn" onclick="changeQty('${k}',1)">+</div></div>`;
+      row.innerHTML=`
+        <div class="chk" onclick="toggle('${k}')">
+          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
+            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="iname" onclick="toggle('${k}')">${item.s}</div>
+        <div class="qty-wrap">
+          <div class="qty-btn" onclick="changeQty('${k}',-1)" style="font-size:24px;padding-bottom:2px">−</div>
+          <div class="qty-num" id="qn_${k}">${st.qty>1?'x'+st.qty:''}</div>
+          <div class="qty-btn" onclick="changeQty('${k}',1)">+</div>
+        </div>`;
       list.appendChild(row);
     });
   });
   updateBar();
 }
+
 function toggle(k){
   state[k].checked=!state[k].checked;
   if(!state[k].checked)state[k].qty=1;
   save();
-  const row=document.querySelector(`[onclick="toggle('${k}')"]`).closest('.row');
+  const row=document.querySelector(`[onclick*="toggle('${k}')"]`).closest('.row');
   row.classList.toggle('checked',state[k].checked);
   const el=document.getElementById('qn_'+k);
   if(el)el.textContent=state[k].qty>1?'x'+state[k].qty:'';
   updateBar();
 }
+
 function changeQty(k,d){
   state[k].qty=Math.max(1,state[k].qty+d);
   save();
@@ -112,39 +267,48 @@ function changeQty(k,d){
   if(el)el.textContent=state[k].qty>1?'x'+state[k].qty:'';
   updateBar();
 }
+
 function updateBar(){
   const n=Object.values(state).filter(v=>v.checked).length;
   document.getElementById('hcount').textContent=n+' checked';
   document.getElementById('binfo').innerHTML=n===0?'Tap items to add to order':'<strong>'+n+' item'+(n===1?'':'s')+'</strong> ready to send';
   document.getElementById('copyBtn').disabled=n===0;
 }
+
 function getListText(){
   let out='DIAMOND SLICE ORDER LIST\n';
   SECTIONS.forEach((sec,si)=>{
     const lines=[];
     sec.items.forEach((item,ii)=>{
       const st=state[key(si,ii)];
-      if(st&&st.checked)lines.push('• '+item+(st.qty>1?' x'+st.qty:''));
+      if(st&&st.checked)lines.push('• '+item.s+(st.qty>1?' x'+st.qty:''));
     });
     if(lines.length){out+='\n'+sec.name.toUpperCase()+'\n'+lines.join('\n')+'\n';}
   });
   return out.trim();
 }
+
 function copyList(){
   const text=getListText(),btn=document.getElementById('copyBtn');
   if(navigator.share){navigator.share({text}).catch(()=>fallbackCopy(text,btn));}
   else{fallbackCopy(text,btn);}
 }
+
 function fallbackCopy(text,btn){
   navigator.clipboard.writeText(text).then(()=>{
     btn.innerHTML='✓ Copied!';btn.classList.add('ok');
-    setTimeout(()=>{btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy & Send';btn.classList.remove('ok');},2500);
+    setTimeout(()=>{
+      btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy & Send';
+      btn.classList.remove('ok');
+    },2500);
   });
 }
+
 function resetAll(){
   if(!confirm('Clear everything and start fresh?'))return;
   state={};save();render();
 }
+
 render();
 </script>
 </body>
