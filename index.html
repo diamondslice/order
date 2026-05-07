@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -179,6 +180,9 @@ const SECTIONS = [
     {s:'Floor cleaner (Mr. Clean)'},
     {s:'Dish soap'},
     {s:'Pot & pan soap (Dawn)'},
+    {s:'Hand soap'},
+    {s:'Windex'},
+    {s:'Sanitizing wipes'},
   ]},
   {name:'Paper & Disposables', items:[
     {s:'Grocery bags'},
@@ -209,107 +213,101 @@ const SECTIONS = [
     {s:'Paper towel C-fold'},
     {s:'Paper towel roll'},
     {s:'Wax paper'},
+    {s:'Cups 2oz'},
+    {s:'Lids 2oz'},
+    {s:'Receipt printer paper'},
+    {s:'Staples'},
   ]},
 ];
 
 let state={};
-try{state=JSON.parse(localStorage.getItem('ds_state')||'{}');}catch(e){}
-function key(si,ii){return si+'_'+ii;}
-function save(){try{localStorage.setItem('ds_state',JSON.stringify(state));}catch(e){}}
+try{state=JSON.parse(localStorage.getItem(‘ds_state’)||’{}’);}catch(e){}
+function key(si,ii){return si+’_’+ii;}
+function save(){try{localStorage.setItem(‘ds_state’,JSON.stringify(state));}catch(e){}}
 
 function render(){
-  const list=document.getElementById('list');
-  list.innerHTML='';
-  SECTIONS.forEach((sec,si)=>{
-    const c=document.createElement('div');
-    c.className='cat-label';
-    c.textContent=sec.name;
-    list.appendChild(c);
-    sec.items.forEach((item,ii)=>{
-      const k=key(si,ii);
-      if(!state[k])state[k]={checked:false,qty:1};
-      const st=state[k];
-      const row=document.createElement('div');
-      row.className='row'+(st.checked?' checked':'');
-      row.innerHTML=`
-        <div class="chk" onclick="toggle('${k}')">
-          <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
-            <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <div class="iname" onclick="toggle('${k}')">${item.s}</div>
-        <div class="qty-wrap">
-          <div class="qty-btn" onclick="changeQty('${k}',-1)" style="font-size:24px;padding-bottom:2px">−</div>
-          <div class="qty-num" id="qn_${k}">${st.qty>1?'x'+st.qty:''}</div>
-          <div class="qty-btn" onclick="changeQty('${k}',1)">+</div>
-        </div>`;
-      list.appendChild(row);
-    });
-  });
-  updateBar();
+const list=document.getElementById(‘list’);
+list.innerHTML=’’;
+SECTIONS.forEach((sec,si)=>{
+const c=document.createElement(‘div’);
+c.className=‘cat-label’;
+c.textContent=sec.name;
+list.appendChild(c);
+sec.items.forEach((item,ii)=>{
+const k=key(si,ii);
+if(!state[k])state[k]={checked:false,qty:1};
+const st=state[k];
+const row=document.createElement(‘div’);
+row.className=‘row’+(st.checked?’ checked’:’’);
+row.innerHTML=` <div class="chk" onclick="toggle('${k}')"> <svg width="13" height="10" viewBox="0 0 13 10" fill="none"> <path d="M1.5 5L5 8.5L11.5 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/> </svg> </div> <div class="iname" onclick="toggle('${k}')">${item.s}</div> <div class="qty-wrap"> <div class="qty-btn" onclick="changeQty('${k}',-1)" style="font-size:24px;padding-bottom:2px">−</div> <div class="qty-num" id="qn_${k}">${st.qty>1?'x'+st.qty:''}</div> <div class="qty-btn" onclick="changeQty('${k}',1)">+</div> </div>`;
+list.appendChild(row);
+});
+});
+updateBar();
 }
 
 function toggle(k){
-  state[k].checked=!state[k].checked;
-  if(!state[k].checked)state[k].qty=1;
-  save();
-  const row=document.querySelector(`[onclick*="toggle('${k}')"]`).closest('.row');
-  row.classList.toggle('checked',state[k].checked);
-  const el=document.getElementById('qn_'+k);
-  if(el)el.textContent=state[k].qty>1?'x'+state[k].qty:'';
-  updateBar();
+state[k].checked=!state[k].checked;
+if(!state[k].checked)state[k].qty=1;
+save();
+const row=document.querySelector(`[onclick*="toggle('${k}')"]`).closest(’.row’);
+row.classList.toggle(‘checked’,state[k].checked);
+const el=document.getElementById(‘qn_’+k);
+if(el)el.textContent=state[k].qty>1?‘x’+state[k].qty:’’;
+updateBar();
 }
 
 function changeQty(k,d){
-  state[k].qty=Math.max(1,state[k].qty+d);
-  save();
-  const el=document.getElementById('qn_'+k);
-  if(el)el.textContent=state[k].qty>1?'x'+state[k].qty:'';
-  updateBar();
+state[k].qty=Math.max(1,state[k].qty+d);
+save();
+const el=document.getElementById(‘qn_’+k);
+if(el)el.textContent=state[k].qty>1?‘x’+state[k].qty:’’;
+updateBar();
 }
 
 function updateBar(){
-  const n=Object.values(state).filter(v=>v.checked).length;
-  document.getElementById('hcount').textContent=n+' checked';
-  document.getElementById('binfo').innerHTML=n===0?'Tap items to add to order':'<strong>'+n+' item'+(n===1?'':'s')+'</strong> ready to send';
-  document.getElementById('copyBtn').disabled=n===0;
+const n=Object.values(state).filter(v=>v.checked).length;
+document.getElementById(‘hcount’).textContent=n+’ checked’;
+document.getElementById(‘binfo’).innerHTML=n===0?‘Tap items to add to order’:’<strong>’+n+’ item’+(n===1?’’:‘s’)+’</strong> ready to send’;
+document.getElementById(‘copyBtn’).disabled=n===0;
 }
 
 function getListText(){
-  let out='DIAMOND SLICE ORDER LIST\n';
-  SECTIONS.forEach((sec,si)=>{
-    const lines=[];
-    sec.items.forEach((item,ii)=>{
-      const st=state[key(si,ii)];
-      if(st&&st.checked)lines.push('• '+item.s+(st.qty>1?' x'+st.qty:''));
-    });
-    if(lines.length){out+='\n'+sec.name.toUpperCase()+'\n'+lines.join('\n')+'\n';}
-  });
-  return out.trim();
+let out=‘DIAMOND SLICE ORDER LIST\n’;
+SECTIONS.forEach((sec,si)=>{
+const lines=[];
+sec.items.forEach((item,ii)=>{
+const st=state[key(si,ii)];
+if(st&&st.checked)lines.push(’• ‘+item.s+(st.qty>1?’ x’+st.qty:’’));
+});
+if(lines.length){out+=’\n’+sec.name.toUpperCase()+’\n’+lines.join(’\n’)+’\n’;}
+});
+return out.trim();
 }
 
 function copyList(){
-  const text=getListText(),btn=document.getElementById('copyBtn');
-  if(navigator.share){navigator.share({text}).catch(()=>fallbackCopy(text,btn));}
-  else{fallbackCopy(text,btn);}
+const text=getListText(),btn=document.getElementById(‘copyBtn’);
+if(navigator.share){navigator.share({text}).catch(()=>fallbackCopy(text,btn));}
+else{fallbackCopy(text,btn);}
 }
 
 function fallbackCopy(text,btn){
-  navigator.clipboard.writeText(text).then(()=>{
-    btn.innerHTML='✓ Copied!';btn.classList.add('ok');
-    setTimeout(()=>{
-      btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy & Send';
-      btn.classList.remove('ok');
-    },2500);
-  });
+navigator.clipboard.writeText(text).then(()=>{
+btn.innerHTML=‘✓ Copied!’;btn.classList.add(‘ok’);
+setTimeout(()=>{
+btn.innerHTML=’<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy & Send’;
+btn.classList.remove(‘ok’);
+},2500);
+});
 }
 
 function resetAll(){
-  if(!confirm('Clear everything and start fresh?'))return;
-  state={};save();render();
+if(!confirm(‘Clear everything and start fresh?’))return;
+state={};save();render();
 }
 
 render();
 </script>
+
 </body>
 </html>
